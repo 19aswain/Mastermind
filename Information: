@@ -1,0 +1,2 @@
+This repository contains various programs. The main one is called "Mastermind.py" and is the pygame version.
+Before this I created the "text_based.py" which was to work out the logic for the code. This did not use pygame and was to learn how the game worked. It works but only for a console based application, and does not produce a window for the program to run in.
