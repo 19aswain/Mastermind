@@ -16,6 +16,7 @@ attempts = 0
 
 for i in range (4):
   ai.append(random.choice(colours))
+print(ai)
 while not win and attempts < 10:
   print("Type your guesses in: ")
   guess1 = input()
@@ -28,12 +29,16 @@ while not win and attempts < 10:
   guess4 = guess4.lower()
   if guess1 == ai[0]:
     pos1 = True
+    print("The first value is in the correct place")
   if guess2 == ai[1]:
     pos2= True
+    print("The second value is in the correct place")
   if guess3 == ai[2]:
     pos3 = True
+    print("The third value is in the correct place")
   if guess4 == ai[3]:
     pos4 = True
+    print("The fourth value is in the correct place")
   if pos1 == True and pos2 == True and pos3 == True and pos4 == True:
     win = True
   if pos1 == False:
@@ -49,3 +54,5 @@ while not win and attempts < 10:
     if guess4 == ai[0] or guess4 == ai[1] or guess4 == ai[2]:
       print(f"The colour {guess4} is elsewhere in the sequence.")
   attempts += 1
+if not win == False:
+    print("Well done, you win")
