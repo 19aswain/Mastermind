@@ -26,3 +26,4 @@ WIDTH = (ROWS * TILESIZE) + 1
 HEIGHT = (COLS * TILESIZE) + 1
 FPS = 60
 TITLE = "Mastermind"
+DIFFICULTY_SETTINGS = ["Easy", "Medium", "Hard"]
