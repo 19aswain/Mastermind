@@ -1,6 +1,7 @@
 import pygame
 import random
 from settings import *
+from main import *
 
 
 class Pin:
@@ -132,7 +133,8 @@ class Board:
             if colour is not None:
                 colour_list.append(colour)
 
-        colour_list.sort()
+        while gamemode == "Hard":
+            colour_list.sort()
         return colour_list
 
     def set_clues(self, colour_list):
