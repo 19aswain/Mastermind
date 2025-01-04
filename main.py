@@ -11,6 +11,7 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+        self.username = username
 
     def new(self):
         self.board = Board()
@@ -66,7 +67,7 @@ class Game:
     def win_routine(self):
         file = open("Leaderboard.txt","a")
         print(f"Well done it took you {11-tries} attmepts to clear this code.")
-        name = input("Can you type in your username for the leaderboard: ")
+        self.username = input("Can you type in your username for the leaderboard: ")
         file.write(f"{name}: {tries}\n")
         file.close()
     
