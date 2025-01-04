@@ -4,6 +4,7 @@ from settings import *
 from sprites import *
 from sprites import Board
 
+file = open("Leaderboard.txt","a")
 
 class Game:
     def __init__(self):
@@ -60,6 +61,14 @@ class Game:
             if colour != RED:
                 return False
         return True
+        win_routine(self)
+
+    def win_routine(self):
+        file = open("Leaderboard.txt","a")
+        print(f"Well done it took you {11-tries} attmepts to clear this code.")
+        name = input("Can you type in your username for the leaderboard: ")
+        file.write(f"{name}: {tries}\n")
+        file.close()
     
     def end_screen(self):
         while True:
@@ -74,5 +83,7 @@ class Game:
 
 game = Game()
 while True:
+    print(f"The available game modes are {DIFFICULTY_SETTINGS[0]}, {DIFFICULTY_SETTINGS[1]} or {DIFFICULTY_SETTINGS[2]}.")
+    gamemode = input("Type in the chosen difficulty from the choices above: ")
     game.new()
     game.run()
