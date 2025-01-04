@@ -1,21 +1,16 @@
 import pygame
 import random
+import csv
 from settings import *
 from sprites import *
 from sprites import Board
-
-file = open("Leaderboard.txt","a")
 
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.username = username
-
-    def new(self):
-        self.board = Board()
-        self.colour = None
+        self.username = ""
 
     def run(self):
         self.playing = True
@@ -62,19 +57,19 @@ class Game:
             if colour != RED:
                 return False
         return True
-        win_routine(self)
 
     def win_routine(self):
-        file = open("Leaderboard.txt","a")
-        print(f"Well done it took you {11-tries} attmepts to clear this code.")
+        print(f"Well done! It took you {11 - self.tries} attempts to clear this code.")
         self.username = input("Can you type in your username for the leaderboard: ")
-        file.write(f"{name}: {tries}\n")
-        file.close()
-    
+
+        with open('Leaderboard.csv', mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([self.username, self.tries])
+
     def end_screen(self):
         while True:
             event = pygame.event.wait()
-            if event.type == pygame.quit:
+            if event.type == pygame.QUIT:
                 quit(0)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
