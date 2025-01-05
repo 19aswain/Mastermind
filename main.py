@@ -10,14 +10,20 @@ class Game:
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
+        self.difficulty = ""
         self.username = ""
+    def new(self):
+        self.board = Board()
+        self.colour = None
 
     def run(self):
         self.playing = True
+        self.difficulty = input("Type in your chosen difficulty (Easy or Hard): ")
         while self.playing:
             self.clock.tick(FPS)
             self.events()
             self.draw()
+            
 
     def draw(self):
         self.screen.fill(BGCOLOUR)
@@ -43,6 +49,7 @@ class Game:
 
                         if self.check_win(clues_colour_list):
                             print("You win")
+                            self.win_routine()
                             self.board.reveal_code()
                             self.end_screen()
                         elif not self.board.next_round():
@@ -57,19 +64,19 @@ class Game:
             if colour != RED:
                 return False
         return True
-
+    
     def win_routine(self):
-        print(f"Well done! It took you {11 - self.tries} attempts to clear this code.")
+        self.attempts = int(input("How many attempts did it take you: "))
         self.username = input("Can you type in your username for the leaderboard: ")
 
         with open('Leaderboard.csv', mode='a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([self.username, self.tries])
-
+            writer.writerow([self.username, self.attempts])
+    
     def end_screen(self):
         while True:
             event = pygame.event.wait()
-            if event.type == pygame.QUIT:
+            if event.type == pygame.quit:
                 quit(0)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
@@ -79,7 +86,5 @@ class Game:
 
 game = Game()
 while True:
-    print(f"The available game modes are {DIFFICULTY_SETTINGS[0]}, {DIFFICULTY_SETTINGS[1]} or {DIFFICULTY_SETTINGS[2]}.")
-    gamemode = input("Type in the chosen difficulty from the choices above: ")
     game.new()
     game.run()
