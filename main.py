@@ -1,90 +1,127 @@
 import pygame
-import random
 import csv
 from settings import *
-from sprites import *
 from sprites import Board
+
 
 class Game:
     def __init__(self):
+        """Initialize the game."""
+        pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         pygame.display.set_caption(TITLE)
         self.clock = pygame.time.Clock()
-        self.difficulty = ""
-        self.username = ""
-    def new(self):
-        self.board = Board()
+        self.running = True
+        self.playing = False
+        self.board = None
         self.colour = None
+        self.difficulty = None
 
-    def run(self):
+    def new_game(self):
+        """Start a new game."""
+        self.difficulty = self.get_difficulty()
+        self.board = Board(self.difficulty)
+        self.colour = None
         self.playing = True
-        self.difficulty = input("Type in your chosen difficulty (Easy or Hard): ")
-        while self.playing:
-            self.clock.tick(FPS)
-            self.events()
-            self.draw()
-            
 
-    def draw(self):
+    def run_game(self):
+        """Main game loop."""
+        while self.playing:
+            self.handle_events()
+            self.update_screen()
+            self.clock.tick(FPS)
+
+    def update_screen(self):
+        """Update the display."""
         self.screen.fill(BGCOLOUR)
         self.board.draw(self.screen)
         pygame.display.flip()
 
-    def events(self):
+    def handle_events(self):
+        """Handle user input."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                quit(0)
+                self.quit_game()
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                mx, my = event.pos
-                self.colour = self.board.select_colour(mx,my,self.colour)
-                if self.colour is not None:
-                    self.board.place_pin(mx, my, self.colour)
-                
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    if self.board.check_row():
-                        clues_colour_list = self.board.check_clues()
-                        self.board.set_clues(clues_colour_list)
+                self.handle_mouse_click(event.pos)
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                self.handle_enter_key()
 
-                        if self.check_win(clues_colour_list):
-                            print("You win")
-                            self.win_routine()
-                            self.board.reveal_code()
-                            self.end_screen()
-                        elif not self.board.next_round():
-                            print("Game over, you lose")
-                            self.board.reveal_code()
-                            self.end_screen()
+    def handle_mouse_click(self, position):
+        """Handle mouse click to select or place colours."""
+        mx, my = position
+        self.colour = self.board.select_colour(mx, my, self.colour)
+        if self.colour:
+            self.board.place_pin(mx, my, self.colour)
 
-    def check_win(self, colour_list):
-        if len(colour_list) != 4:
-            return False
-        for colour in colour_list:
-            if colour != RED:
-                return False
-        return True
-    
+    def handle_enter_key(self):
+        """Handle the Enter key for row checking."""
+        if self.board.check_row():
+            clues = self.board.check_clues()
+            self.board.set_clues(clues)
+
+            if self.check_win(clues):
+                self.win_routine()
+                self.show_end_screen("You win!")
+            elif not self.board.next_round():
+                self.show_end_screen("Game over, you lose.")
+                self.board.reveal_code()
+
+    def check_win(self, clues):
+        """Check if the player has won."""
+        return len(clues) == 4 and all(colour == RED for colour in clues)
+
     def win_routine(self):
-        self.attempts = int(input("How many attempts did it take you: "))
-        self.username = input("Can you type in your username for the leaderboard: ")
-
-        with open('Leaderboard.csv', mode='a', newline='') as file:
+        """Handle the win scenario."""
+        username = self.get_username()
+        attempts = self.board.get_attempts()
+        with open('Leaderboard.csv', 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([self.username, self.attempts])
-    
-    def end_screen(self):
+            writer.writerow([username, attempts])
+
+    def show_end_screen(self, message):
+        """Display the end screen."""
+        print(message)
+        self.board.reveal_code()
+        self.playing = False
+        self.wait_for_keypress()
+
+    def wait_for_keypress(self):
+        """Wait for the player to press Enter to continue."""
         while True:
             event = pygame.event.wait()
-            if event.type == pygame.quit:
-                quit(0)
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.playing = False
-                    return
-            self.draw()
+            if event.type == pygame.QUIT:
+                self.quit_game()
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                return
 
-game = Game()
-while True:
-    game.new()
-    game.run()
+    def quit_game(self):
+        """Exit the game."""
+        self.running = False
+        self.playing = False
+        pygame.quit()
+        quit()
+
+    def get_difficulty(self):
+        """Get the difficulty level from the player."""
+        while True:
+            difficulty = input("Choose difficulty (Easy or Hard): ").strip().lower()
+            if difficulty in {"easy", "hard"}:
+                return difficulty
+            print("Invalid input. Please choose 'Easy' or 'Hard'.")
+
+    @staticmethod
+    def get_username():
+        """Get the player's username."""
+        return input("Enter your username: ").strip()
+
+    def start(self):
+        """Start the main program loop."""
+        while self.running:
+            self.new_game()
+            self.run_game()
+
+
+if __name__ == "__main__":
+    game = Game()
+    game.start()
