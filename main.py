@@ -65,6 +65,26 @@ class Game:
         return True
     
     def win_routine(self):
+        if self.board.tries == 10:
+            self.attempts = 1
+        elif self.board.tries == 9:
+            self.attempts = 2
+        elif self.board.tries == 8:
+            self.attempts = 3
+        elif self.board.tries == 7:
+            self.attempts = 4
+        elif self.board.tries == 6:
+            self.attempts = 5
+        elif self.board.tries == 5:
+            self.attempts = 6
+        elif self.board.tries == 4:
+            self.attempts = 7
+        elif self.board.tries == 3:
+            self.attempts = 8
+        elif self.board.tries == 2:
+            self.attempts = 9
+        elif self.board.tries == 1:
+            self.attempts = 10   
         self.attempts = int(input("How many attempts did it take you: "))
         self.username = input("Can you type in your username for the leaderboard: ")
 
