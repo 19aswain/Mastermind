@@ -10,13 +10,14 @@ class Pin:
         self.revealed = revealed
 
     def draw(self, screen):
-        center = (self.x + (TILESIZE / 2), self.y + (TILESIZE / 2))
+        center = (self.x + (TILESIZE/2), self.y + (TILESIZE/2))
         if self.colour is not None and self.revealed:
             pygame.draw.circle(screen, tuple(x * 0.3 for x in self.colour), tuple(x + 1 for x in center), 15)
             pygame.draw.circle(screen, self.colour, center, 15)
         elif not self.revealed:
             pygame.draw.circle(screen, DARKGREY, center, 15)
             pygame.draw.circle(screen, BLACK, center, 15, 3)
+
         else:
             pygame.draw.circle(screen, DARKGREY, center, 10)
 
@@ -31,16 +32,15 @@ class CluePin(Pin):
 
 
 class Board:
-    def __init__(self, difficulty):
-        self.difficulty = difficulty
+    def __init__(self):
         self.tries = 10
-        self.pins_surface = pygame.Surface((4 * TILESIZE, 11 * TILESIZE))
+        self.pins_surface = pygame.Surface((4*TILESIZE, 11*TILESIZE))
         self.pins_surface.fill(BGCOLOUR)
 
-        self.clue_surface = pygame.Surface((TILESIZE, 11 * TILESIZE))
+        self.clue_surface = pygame.Surface((TILESIZE, 11*TILESIZE))
         self.clue_surface.fill(BGCOLOUR)
 
-        self.colour_selection_surface = pygame.Surface((4 * TILESIZE, 2 * TILESIZE))
+        self.colour_selection_surface = pygame.Surface((4*TILESIZE, 2*TILESIZE))
         self.colour_selection_surface.fill(DARKGREY)
 
         self.colour_selection = []
@@ -57,7 +57,7 @@ class Board:
             temp_row = []
             for row in range(2):
                 for col in range(2):
-                    temp_row.append(CluePin(col * (TILESIZE // 4), (row * (TILESIZE // 4)) + i * TILESIZE))
+                    temp_row.append(CluePin(col * (TILESIZE//4), (row * (TILESIZE//4)) + i * TILESIZE))
             self.board_clues.append(temp_row)
 
     def create_pins(self):
@@ -72,7 +72,7 @@ class Board:
         for y in range(2):
             for x in range(4):
                 if colour_index < AMOUNT_COLOUR:
-                    self.colour_selection.append(Pin(x * TILESIZE, y * TILESIZE, COLOURS[colour_index]))
+                    self.colour_selection.append(Pin(x*TILESIZE, y*TILESIZE, COLOURS[colour_index]))
                     colour_index += 1
                 else:
                     break
@@ -90,10 +90,10 @@ class Board:
                 pin.draw(self.clue_surface)
 
         screen.blit(self.pins_surface, (0, 0))
-        screen.blit(self.clue_surface, (4 * TILESIZE, 0))
-        screen.blit(self.colour_selection_surface, (0, 11 * TILESIZE))
+        screen.blit(self.clue_surface, (4*TILESIZE, 0))
+        screen.blit(self.colour_selection_surface, (0, 11*TILESIZE))
 
-        pygame.draw.rect(screen, RED, (0, TILESIZE * self.tries, 4 * TILESIZE, TILESIZE), 2)
+        pygame.draw.rect(screen, RED, (0, TILESIZE*self.tries, 4*TILESIZE, TILESIZE), 2)
 
         for x in range(0, WIDTH, TILESIZE):
             for y in range(0, HEIGHT, TILESIZE):
@@ -102,8 +102,9 @@ class Board:
 
     def select_colour(self, mx, my, previous_colour):
         for pin in self.colour_selection:
-            if pin.x < mx < pin.x + TILESIZE and pin.y < my - 11 * TILESIZE < pin.y + TILESIZE:
+            if pin.x < mx < pin.x + TILESIZE and pin.y < my - 11*TILESIZE < pin.y + TILESIZE:
                 return pin.colour
+
         return previous_colour
 
     def place_pin(self, mx, my, colour):
@@ -131,12 +132,11 @@ class Board:
             if colour is not None:
                 colour_list.append(colour)
 
-        if self.difficulty == "easy":
-            colour_list.sort()
+        colour_list.sort()
         return colour_list
 
     def set_clues(self, colour_list):
-        for colour, pin in zip(colour_list, self.board_clues[self.tries - 1]):
+        for colour, pin in zip(colour_list, self.board_clues[self.tries-1]):
             pin.colour = colour
 
     def create_code(self):
@@ -144,6 +144,7 @@ class Board:
         for i, pin in enumerate(self.board_pins[0]):
             pin.colour = random_code[i]
             pin.revealed = False
+        print(random_code)
 
     def next_round(self):
         self.tries -= 1
