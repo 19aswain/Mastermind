@@ -1,5 +1,4 @@
 import pygame
-import random
 import csv
 from settings import *
 from sprites import *
@@ -18,7 +17,7 @@ class Game:
 
     def run(self):
         self.playing = True
-        self.difficulty = input("Type in your chosen difficulty (Easy or Hard): ")
+        self.difficulty = input("Type in your chosen difficulty (Easy or Hard): ")                    
         while self.playing:
             self.clock.tick(FPS)
             self.events()
@@ -49,8 +48,8 @@ class Game:
 
                         if self.check_win(clues_colour_list):
                             print("You win")
-                            self.win_routine()
                             self.board.reveal_code()
+                            self.win_routine()
                             self.end_screen()
                         elif not self.board.next_round():
                             print("Game over, you lose")
