@@ -1,6 +1,3 @@
-import pygame
-import random
-
 # COLORS (r, g, b)
 WHITE = (200, 200, 200)
 BLACK = (30, 30, 30)
