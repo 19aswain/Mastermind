@@ -11,6 +11,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.difficulty = ""
         self.username = ""
+        self.attempts = 0
     def new(self):
         self.board = Board()
         self.colour = None
