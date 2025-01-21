@@ -144,7 +144,7 @@ class Board:
         for i, pin in enumerate(self.board_pins[0]):
             pin.colour = random_code[i]
             pin.revealed = False
-        print(random_code)
+        #print(random_code) - Prints the code for the round
 
     def next_round(self):
         self.tries -= 1
